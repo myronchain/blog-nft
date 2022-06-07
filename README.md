@@ -2,7 +2,7 @@
 
 NFT Contracts
 
-# Hardhat使用
+## Hardhat使用
 
 1. 安装Hardhat
 ```shell

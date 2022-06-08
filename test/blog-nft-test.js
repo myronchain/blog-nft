@@ -129,5 +129,38 @@ describe("BlogAsset contract", function () {
             let _balance = await nft.balanceOf(admin.address);
             expect(_balance).to.equal(3);
         })
+
+        it("Should transfer to addresses batch correct", async function () {
+            let tx, rc, event;
+            tx = await nft.mint(admin.address, 1, IPFS_HASH);
+            await tx.wait();
+            tx = await nft.mint(admin.address, 2, IPFS_HASH);
+            await tx.wait();
+            tx = await nft.mint(admin.address, 3, IPFS_HASH);
+            await tx.wait();
+            tx = await nft.safeTransferFromToAddresses(admin.address, [addr1.address, addr2.address], [1, 2]);
+            await tx.wait();
+            let _balance1 = await nft.balanceOf(admin.address);
+            expect(_balance1).to.equal(1);
+            let _balance2 = await nft.balanceOf(addr1.address);
+            expect(_balance2).to.equal(1);
+            let _balance3 = await nft.balanceOf(addr2.address);
+            expect(_balance3).to.equal(1);
+        })
+
+
+        it("Should transfer batch correct", async function () {
+            let tx, rc, event;
+            tx = await nft.mint(admin.address, 1, IPFS_HASH);
+            await tx.wait();
+            tx = await nft.mint(admin.address, 2, IPFS_HASH);
+            await tx.wait();
+            tx = await nft.safeTransferFromBatch(admin.address, addr1.address, [1, 2]);
+            await tx.wait();
+            let _balance1 = await nft.balanceOf(admin.address);
+            expect(_balance1).to.equal(0);
+            let _balance2 = await nft.balanceOf(addr1.address);
+            expect(_balance2).to.equal(2);
+        })
     });
 });

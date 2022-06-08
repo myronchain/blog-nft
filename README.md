@@ -3,7 +3,10 @@
 NFT Contracts
 
 ## Hardhat使用
-
+0. 准备配置文件
+```shell
+cp .env.example .env
+```
 1. 安装Hardhat
 ```shell
 npm install --save-dev hardhat

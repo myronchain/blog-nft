@@ -62,7 +62,7 @@ AccessControlEnumerable
         _tokenURIs[tokenId] = uri;
     }
 
-    function setTokenURI(uint32 tokenId, string calldata uri) public {
+    function setTokenURI(uint32 tokenId, string calldata uri) public onlyMaintainer {
         _tokenURIs[tokenId] = uri;
     }
 

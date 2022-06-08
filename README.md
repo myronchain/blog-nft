@@ -1,6 +1,8 @@
 # Blog NFT
 
-NFT Contracts
+ERC721 Contracts
+
+主要功能室基础的ERC721合约功能
 
 ## Hardhat使用
 0. 准备配置文件

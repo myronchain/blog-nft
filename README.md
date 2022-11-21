@@ -43,7 +43,9 @@ npx hardhat verify --network mumbai DEPLOYED_CONTRACT_ADDRESS 'BlogAsset Assets'
 ```
 Successfully verified contract Assets on Polygonscan Testnet.
 https://mumbai.polygonscan.com/address/DEPLOYED_CONTRACT_ADDRESS#code
+
 6. 升级合约
+
 将代理合约地址写入scripts/upgrade.js中的PROXY_CONTRACT_ADDRESS变量
 ```shell
 npx hardhat --network mumbai run scripts/upgrade.js

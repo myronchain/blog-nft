@@ -1,6 +1,6 @@
 // const { describe, beforeEach, it } = require('mocha');
 const {expect} = require("chai");
-const {ethers} = require("hardhat");
+const {ethers, upgrades} = require("hardhat");
 
 // eslint-disable-next-line no-undef
 describe("BlogNFTAsset contract", function () {
@@ -35,9 +35,12 @@ describe("BlogNFTAsset contract", function () {
         [admin, maintainer, minter, addr1, addr2, ...addrs] = await ethers.getSigners();
 
         // Get the ContractFactory
-        BlogFactory = await ethers.getContractFactory("BlogAsset");
-        nft = await BlogFactory.deploy("BlogAsset Assets", "BA", BASE_URI);
+        BlogFactory = await ethers.getContractFactory("BlogNFTAsset");
+        nft = await upgrades.deployProxy(BlogFactory,
+            ["Blog NFT Asset", "BNA", BASE_URI],
+            {initializer: "initialize", kind: 'uups'})
         await nft.deployed();
+
         let tx = await nft.grantRole(MAINTAIN_ROLE, maintainer.address);
         await tx.wait();
 

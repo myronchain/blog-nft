@@ -7,12 +7,13 @@ require("hardhat-gas-reporter");
 require("solidity-coverage");
 require("hardhat-contract-sizer");
 require("hardhat-interface-generator");
+require("@openzeppelin/hardhat-upgrades");
 
 const { task } = require("hardhat/config");
 
 // const PRIVATE_KEY = process.env.PRIVATE_KEY;
-const withOptimizations = false;
-const defaultNetwork = "hardhat"; // "hardhat" for tests
+const withOptimizations = true;
+const defaultNetwork = "mumbai"; // "hardhat" for tests
 
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
@@ -42,31 +43,31 @@ module.exports = {
   },
   defaultNetwork: defaultNetwork,
   networks: {
-     hardhat: {
-      allowUnlimitedContractSize: true,
-      chainId: !!process.env.HARDHATCHAINID ? process.env.HARDHATCHAINID : undefined,
-      timeout: 99999 * 2,
-      gas: process.env.HARDHATCHAINID === 137 ? 19_000_000 :
-        process.env.HARDHATCHAINID === 80001 ? 19_000_000 :
-          undefined,
-      forking: !!process.env.HARDHATCHAINID && process.env.HARDHATCHAINID !== 31337 ? {
-        url:
-          process.env.HARDHATCHAINID === 137 ? process.env.maticRpcUrl :
-          process.env.HARDHATCHAINID === 250 ? process.env.ftmRpcUrl :
-            process.env.HARDHATCHAINID === 80001 ? process.env.MUMBAI_URL :
-              undefined,
-        blockNumber:
-          process.env.HARDHATCHAINID === 137 ? process.env.maticForkBlock !== 0 ? process.env.maticForkBlock : undefined :
-          process.env.HARDHATCHAINID === 250 ? process.env.ftmForkBlock !== 0 ? process.env.ftmForkBlock : undefined :
-            process.env.HARDHATCHAINID === 80001 ? process.env.MUMBAI_BLOCK !== 0 ? process.env.MUMBAI_BLOCK : undefined :
-              undefined
-      } : undefined,
-      accounts: {
-        mnemonic: "test test test test test test test test test test test junk",
-        path: "m/44'/60'/0'/0",
-        accountsBalance: "100000000000000000000000000000"
-      },
-    },
+    //  hardhat: {
+    //   allowUnlimitedContractSize: !withOptimizations,
+    //   chainId: !!process.env.HARDHATCHAINID ? process.env.HARDHATCHAINID : undefined,
+    //   timeout: 99999 * 2,
+    //   gas: process.env.HARDHATCHAINID === 137 ? 19_000_000 :
+    //     process.env.HARDHATCHAINID === 80001 ? 19_000_000 :
+    //       undefined,
+    //   forking: !!process.env.HARDHATCHAINID && process.env.HARDHATCHAINID !== 31337 ? {
+    //     url:
+    //       process.env.HARDHATCHAINID === 137 ? process.env.maticRpcUrl :
+    //       process.env.HARDHATCHAINID === 250 ? process.env.ftmRpcUrl :
+    //         process.env.HARDHATCHAINID === 80001 ? process.env.MUMBAI_URL :
+    //           undefined,
+    //     blockNumber:
+    //       process.env.HARDHATCHAINID === 137 ? process.env.maticForkBlock !== 0 ? process.env.maticForkBlock : undefined :
+    //       process.env.HARDHATCHAINID === 250 ? process.env.ftmForkBlock !== 0 ? process.env.ftmForkBlock : undefined :
+    //         process.env.HARDHATCHAINID === 80001 ? process.env.MUMBAI_BLOCK !== 0 ? process.env.MUMBAI_BLOCK : undefined :
+    //           undefined
+    //   } : undefined,
+    //   accounts: {
+    //     mnemonic: "test test test test test test test test test test test junk",
+    //     path: "m/44'/60'/0'/0",
+    //     accountsBalance: "100000000000000000000000000000"
+    //   },
+    // },
     hardhat: {
       blockGasLimit: 10000000,
       allowUnlimitedContractSize: !withOptimizations,
@@ -74,16 +75,19 @@ module.exports = {
     mumbai: {
       url: `https://polygon-mumbai.g.alchemy.com/v2/PZd297vs-VHFPPcF4mRaayWFRgdHKn6I`,
       accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+          process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY]: [],
+      // gas: 19_000_000,
+      // gasPrice: 100_000_000_000,
     },
     rinkeby: {
       url: `https://rinkeby.infura.io/v3/19de54b594234ffb978a4e81f18a9827`,
-      accounts: [process.env.PRIVATE_KEY],
+      accounts:
+          process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
     polygon: {
-      url: `https://polygon-mainnet.g.alchemy.com/v2/yDmZwRGPvSI_OFe0QWvatH4Qcg_y_N4C`,
+      url: `https://polygon-mainnet.g.alchemy.com/v2/Wv3e5nXZ2iUmDVYSU_ZdcDkCSsIqX9iz`,
       accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+          process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
   },
   gasReporter: {
@@ -91,7 +95,7 @@ module.exports = {
     currency: "USD",
   },
   etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY,
+    apiKey: process.env.POLYGONSCAN_API_KEY,
   },
   contractSizer: {
     alphaSort: false,
@@ -100,6 +104,6 @@ module.exports = {
     strict: false,
   },
   mocha: {
-    timeout: 9999999999
+    timeout: 9999999999,
   },
 };

@@ -7,15 +7,8 @@ const {upgrades} = require("hardhat");
 const hre = require("hardhat");
 
 
-// Constants
-const network_configs = {
-    mumbai: {
-        metadata_uri: "https://ipfs.io/ip/",
-    }, polygon: {
-        metadata_uri: "https://ipfs.io/ip/",
-    },
-}
-let config;
+// Proxy contract address
+const PROXY_CONTRACT_ADDRESS = "0x09236345EC74FBa8F9fC7047c2a3916D7735DcE3"
 
 async function main() {
     // Hardhat always runs the compile task when running scripts with its command
@@ -26,33 +19,22 @@ async function main() {
     // await hre.run('compile');
 
     // We get the Assets contract to deploy
+    const bna = await hre.ethers.getContractFactory("BlogNFTAsset");
+    console.log("Deploying BlogNFTAsset...")
+    const bnaUpgrades = await upgrades.upgradeProxy(PROXY_CONTRACT_ADDRESS, bna);
+    console.log("upgradedAssets proxy deployed to", bnaUpgrades.address);
 
-    if (hre.network.name === "polygon") {
-        config = network_configs.polygon
-    } else {
-        config = network_configs.mumbai
-    }
-
-    console.log("Network: ", hre.network.name)
-    console.log("Metadata URI: ", config.metadata_uri)
-
-    const assets = await hre.ethers.getContractFactory("BlogNFTAsset");
-    let upgradedAssets = await upgrades.deployProxy(assets, ["Blog NFT Asset", "BNA", config.metadata_uri], {
-        initializer: "initialize",
-        kind: 'uups'
-    })
-    let bna = await upgradedAssets.deployed();
-    const implAddress = await upgrades.erc1967.getImplementationAddress(bna.address);
-    const adminAddress = await upgrades.erc1967.getAdminAddress(bna.address)
-    console.log("upgradedAssets proxy deployed to:", bna.address);
+    await bnaUpgrades.deployTransaction.wait([(confirms = 3)]);
+    // verify the contracts
+    const implAddress = await upgrades.erc1967.getImplementationAddress(bnaUpgrades.address);
     console.log("upgradedAssets implementation deployed to", implAddress);
-    // TODO 这里输出不对
-    console.log("upgradedAssets admin deployed to", adminAddress);
 
     // verify the contracts
     await hre.run("verify:verify", {
         address: implAddress,
     });
+
+    console.log("BlogNFTAsset upgraded");
 }
 
 // We recommend this pattern to be able to use async/await everywhere

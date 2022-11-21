@@ -25,34 +25,13 @@ UUPSUpgradeable
         uint32 amount;
     }
 
-    event TokenMinted(uint256 indexed tokenId, uint32 indexed numMinted);
-
-
     bytes32 public MINTER_ROLE;
-    bytes32 public MAINTAINER_ROLE ;
+    bytes32 public MAINTAINER_ROLE;
     // key: token_id value: ipfs hash
     mapping(uint256 => string) private _tokenURIs;
     string private __baseURI;
 
-    /// @custom:oz-upgrades-unsafe-allow constructor
-    constructor() initializer {}
-
-    function initialize(string memory initName, string memory initSymbol, string memory initBaseURI) external initializer{
-        __ReentrancyGuard_init();
-        __AccessControlEnumerable_init();
-        __UUPSUpgradeable_init();
-        __ERC721_init(initName,initSymbol);
-        __ERC721Burnable_init();
-        __ERC721Pausable_init();
-
-        MINTER_ROLE = keccak256("MINTER_ROLE");
-        MAINTAINER_ROLE = keccak256("MAINTAINER_ROLE");
-
-        __baseURI = initBaseURI;
-
-        _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
-        _setupRole(MAINTAINER_ROLE, _msgSender());
-    }
+    event TokenMinted(uint256 indexed tokenId, uint32 indexed numMinted);
 
     modifier onlyMaintainer() {
         require(hasRole(MAINTAINER_ROLE, _msgSender()), "not maintainer");
@@ -69,6 +48,25 @@ UUPSUpgradeable
         _;
     }
 
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() initializer {}
+
+    function initialize(string memory initName, string memory initSymbol, string memory initBaseURI) external initializer {
+        __ReentrancyGuard_init();
+        __AccessControlEnumerable_init();
+        __UUPSUpgradeable_init();
+        __ERC721_init(initName, initSymbol);
+        __ERC721Burnable_init();
+        __ERC721Pausable_init();
+
+        MINTER_ROLE = keccak256("MINTER_ROLE");
+        MAINTAINER_ROLE = keccak256("MAINTAINER_ROLE");
+
+        __baseURI = initBaseURI;
+
+        _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
+        _setupRole(MAINTAINER_ROLE, _msgSender());
+    }
 
     function _setTokenURI(uint32 tokenId, string calldata uri) internal {
         require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
@@ -131,15 +129,7 @@ UUPSUpgradeable
         uint256 firstTokenId,
         uint256 tokenId
     ) internal override(ERC721Upgradeable, ERC721PausableUpgradeable) {
-        super._beforeTokenTransfer(from, to,firstTokenId, tokenId);
-    }
-
-    function pause() external onlyMaintainer {
-        _pause();
-    }
-
-    function unpause() external onlyMaintainer {
-        _unpause();
+        super._beforeTokenTransfer(from, to, firstTokenId, tokenId);
     }
 
     // public functions
@@ -165,12 +155,19 @@ UUPSUpgradeable
         }
     }
 
+    function pause() external onlyMaintainer {
+        _pause();
+    }
+
+    function unpause() external onlyMaintainer {
+        _unpause();
+    }
 
     /**
      * @dev This empty reserved space is put in place to allow future versions to add new
      * variables without shifting down storage in the inheritance chain.
      * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
     */
-    uint256[100] private __gap;
+    uint256[50] private __gap;
 
 }

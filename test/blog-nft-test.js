@@ -2,11 +2,8 @@
 const {expect} = require("chai");
 const {ethers} = require("hardhat");
 
-function getTokenId(modelId, number) {
-    return (modelId * (2 ** 32)) + number
-}
-
-describe("BlogAsset contract", function () {
+// eslint-disable-next-line no-undef
+describe("BlogNFTAsset contract", function () {
     let admin;
     let maintainer;
     let minter;
@@ -33,6 +30,7 @@ describe("BlogAsset contract", function () {
 
     // `beforeEach` will run before each test, re-deploying the contract every
     // time. It receives a callback, which can be async.
+    // eslint-disable-next-line no-undef
     beforeEach(async function () {
         [admin, maintainer, minter, addr1, addr2, ...addrs] = await ethers.getSigners();
 
@@ -50,7 +48,9 @@ describe("BlogAsset contract", function () {
         await tx.wait();
     });
 
+    // eslint-disable-next-line no-undef
     describe("Deployment", function () {
+        // eslint-disable-next-line no-undef
         it("Should set the right admin / maintainer / minter", async function () {
             const isAdmin = await nft.hasRole(ADMIN_ROLE, admin.address);
             expect(isAdmin).to.equal(true);
@@ -63,7 +63,9 @@ describe("BlogAsset contract", function () {
         });
     });
 
+    // eslint-disable-next-line no-undef
     describe("Transactions", function () {
+        // eslint-disable-next-line no-undef
         it("Should mint correctly", async function () {
             const tx = await nft.mint(admin.address, 1, 1);
             await tx.wait();
@@ -71,6 +73,7 @@ describe("BlogAsset contract", function () {
             expect(_balance).to.equal(1);
         });
 
+        // eslint-disable-next-line no-undef
         it("Should mint with correct token ID", async function () {
             let tx = await nft.mint(admin.address, 1, IPFS_HASH);
             let rc = await tx.wait();
@@ -86,6 +89,7 @@ describe("BlogAsset contract", function () {
 
         });
 
+        // eslint-disable-next-line no-undef
         it("Should not able to transfer when paused", async function () {
             let tx, rc, event;
             tx = await nft.mint(admin.address, 1, IPFS_HASH);
@@ -107,6 +111,7 @@ describe("BlogAsset contract", function () {
             await tx.wait();
         });
 
+        // eslint-disable-next-line no-undef
         it("Should have correct token URI", async function () {
             let tx, rc, event;
             tx = await nft.mint(admin.address, 1, IPFS_HASH);
@@ -118,6 +123,7 @@ describe("BlogAsset contract", function () {
             expect(uri).to.equal(BASE_URI + IPFS_HASH)
         })
 
+        // eslint-disable-next-line no-undef
         it("MintBatch should mint correct amount", async function () {
             let tx, rc, event;
             tx = await nft.mint(admin.address, 1, IPFS_HASH);
@@ -130,6 +136,7 @@ describe("BlogAsset contract", function () {
             expect(_balance).to.equal(3);
         })
 
+        // eslint-disable-next-line no-undef
         it("Should transfer to addresses batch correct", async function () {
             let tx, rc, event;
             tx = await nft.mint(admin.address, 1, IPFS_HASH);
@@ -149,6 +156,7 @@ describe("BlogAsset contract", function () {
         })
 
 
+        // eslint-disable-next-line no-undef
         it("Should transfer batch correct", async function () {
             let tx, rc, event;
             tx = await nft.mint(admin.address, 1, IPFS_HASH);

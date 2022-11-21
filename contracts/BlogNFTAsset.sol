@@ -1,20 +1,23 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.4;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Pausable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721BurnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721PausableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 
-
-contract BlogAsset is
-ERC721,
-ERC721Burnable,
-ERC721Pausable,
-ReentrancyGuard,
-AccessControlEnumerable
+contract BlogNFTAsset is
+Initializable,
+ERC721Upgradeable,
+ERC721BurnableUpgradeable,
+ERC721PausableUpgradeable,
+ReentrancyGuardUpgradeable,
+AccessControlEnumerableUpgradeable,
+UUPSUpgradeable
 {
     struct MintParams {
         address receiver;
@@ -25,15 +28,28 @@ AccessControlEnumerable
     event TokenMinted(uint256 indexed tokenId, uint32 indexed numMinted);
 
 
-    bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
-    bytes32 public constant MAINTAINER_ROLE = keccak256("MAINTAINER_ROLE");
+    bytes32 public MINTER_ROLE;
+    bytes32 public MAINTAINER_ROLE ;
+    // key: token_id value: ipfs hash
+    mapping(uint256 => string) private _tokenURIs;
+    string private __baseURI;
 
-    constructor(
-        string memory initName,
-        string memory initSymbol,
-        string memory initBaseURI
-    ) ERC721(initName, initSymbol) {
+    /// @custom:oz-upgrades-unsafe-allow constructor
+    constructor() initializer {}
+
+    function initialize(string memory initName, string memory initSymbol, string memory initBaseURI) external initializer{
+        __ReentrancyGuard_init();
+        __AccessControlEnumerable_init();
+        __UUPSUpgradeable_init();
+        __ERC721_init(initName,initSymbol);
+        __ERC721Burnable_init();
+        __ERC721Pausable_init();
+
+        MINTER_ROLE = keccak256("MINTER_ROLE");
+        MAINTAINER_ROLE = keccak256("MAINTAINER_ROLE");
+
         __baseURI = initBaseURI;
+
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
         _setupRole(MAINTAINER_ROLE, _msgSender());
     }
@@ -53,9 +69,6 @@ AccessControlEnumerable
         _;
     }
 
-    // key: token_id value: ipfs hash
-    mapping(uint256 => string) private _tokenURIs;
-    string private __baseURI;
 
     function _setTokenURI(uint32 tokenId, string calldata uri) internal {
         require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
@@ -65,6 +78,8 @@ AccessControlEnumerable
     function setTokenURI(uint32 tokenId, string calldata uri) public onlyMaintainer {
         _tokenURIs[tokenId] = uri;
     }
+
+    function _authorizeUpgrade(address) internal override onlyAdmin {}
 
     function mint(
         address to,
@@ -104,7 +119,7 @@ AccessControlEnumerable
     function supportsInterface(bytes4 interfaceId)
     public
     view
-    override(ERC721, AccessControlEnumerable)
+    override(ERC721Upgradeable, AccessControlEnumerableUpgradeable)
     returns (bool)
     {
         return super.supportsInterface(interfaceId);
@@ -113,9 +128,10 @@ AccessControlEnumerable
     function _beforeTokenTransfer(
         address from,
         address to,
+        uint256 firstTokenId,
         uint256 tokenId
-    ) internal override(ERC721, ERC721Pausable) {
-        super._beforeTokenTransfer(from, to, tokenId);
+    ) internal override(ERC721Upgradeable, ERC721PausableUpgradeable) {
+        super._beforeTokenTransfer(from, to,firstTokenId, tokenId);
     }
 
     function pause() external onlyMaintainer {
@@ -148,4 +164,13 @@ AccessControlEnumerable
             safeTransferFrom(from, receivers[i], tokenIds[i]);
         }
     }
+
+
+    /**
+     * @dev This empty reserved space is put in place to allow future versions to add new
+     * variables without shifting down storage in the inheritance chain.
+     * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
+    */
+    uint256[100] private __gap;
+
 }

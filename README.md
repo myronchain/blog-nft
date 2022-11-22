@@ -1,4 +1,4 @@
-# Blog NFT Asset
+# 基于Openzeppelin的Blog NFT Asset
 
 Blog NFT Asset 是将博客作为NFT，博客内容使用IPFS进行存储，链上存储Hash。基于Openzeppelin的可升级合约库ERC721进行实现
 

@@ -1,12 +1,14 @@
 # Blog NFT Asset
 
-ERC721 Contracts
+Blog NFT Asset 是将博客视为NFT，博客内容使用IPFS进行存储，链上存储Hash。基于Openzeppelin的可升级合约库ERC721进行实现
 
-主要功能是基础的ERC721合约功能
+Solidity版本为0.8.4
 
-使用Polygon链，对应测试链为mumbai
+Nodejs版本为v14.15.3
 
-Solidity版本0.8.4
+目前已经部署到Polygon上(测试使用mumbai网络)，合约地址：
+- upgradedAssets proxy deployed to: [0xEB4881FbC0793BB61fD455e0A2e1b3627a6ca1EA](https://polygonscan.com/address/0xEB4881FbC0793BB61fD455e0A2e1b3627a6ca1EA)
+- upgradedAssets implementation deployed to [0xe1F643A2CE9765C288DBFd0374c269269E438460](https://polygonscan.com/address/0xe1F643A2CE9765C288DBFd0374c269269E438460)
 
 ## Hardhat使用
 1. 准备配置文件

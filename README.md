@@ -10,7 +10,7 @@ Nodejs版本为v14.15.3
 - upgradedAssets proxy deployed to: [0xEB4881FbC0793BB61fD455e0A2e1b3627a6ca1EA](https://polygonscan.com/address/0xEB4881FbC0793BB61fD455e0A2e1b3627a6ca1EA)
 - upgradedAssets implementation deployed to [0xe1F643A2CE9765C288DBFd0374c269269E438460](https://polygonscan.com/address/0xe1F643A2CE9765C288DBFd0374c269269E438460)
 
-## Hardhat使用
+# Hardhat使用
 1. 准备配置文件
 ```shell
 cp .env.example .env

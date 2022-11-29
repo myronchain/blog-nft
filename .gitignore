@@ -25,3 +25,9 @@ artifacts
 
 .idea
 yarn.lock
+
+.openzeppelin
+
+.vscode
+
+.DS_Store

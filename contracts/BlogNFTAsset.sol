@@ -9,15 +9,14 @@ import "@openzeppelin/contracts-upgradeable/security/ReentrancyGuardUpgradeable.
 import "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 
-
 contract BlogNFTAsset is
-Initializable,
-ERC721Upgradeable,
-ERC721BurnableUpgradeable,
-ERC721PausableUpgradeable,
-ReentrancyGuardUpgradeable,
-AccessControlEnumerableUpgradeable,
-UUPSUpgradeable
+    Initializable,
+    ERC721Upgradeable,
+    ERC721BurnableUpgradeable,
+    ERC721PausableUpgradeable,
+    ReentrancyGuardUpgradeable,
+    AccessControlEnumerableUpgradeable,
+    UUPSUpgradeable
 {
     struct MintParams {
         address receiver;
@@ -51,7 +50,11 @@ UUPSUpgradeable
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() initializer {}
 
-    function initialize(string memory initName, string memory initSymbol, string memory initBaseURI) external initializer {
+    function initialize(
+        string memory initName,
+        string memory initSymbol,
+        string memory initBaseURI
+    ) external initializer {
         __ReentrancyGuard_init();
         __AccessControlEnumerable_init();
         __UUPSUpgradeable_init();
@@ -69,11 +72,17 @@ UUPSUpgradeable
     }
 
     function _setTokenURI(uint32 tokenId, string calldata uri) internal {
-        require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
+        require(
+            _exists(tokenId),
+            "ERC721Metadata: URI query for nonexistent token"
+        );
         _tokenURIs[tokenId] = uri;
     }
 
-    function setTokenURI(uint32 tokenId, string calldata uri) public onlyMaintainer {
+    function setTokenURI(
+        uint32 tokenId,
+        string calldata uri
+    ) public onlyMaintainer {
         _tokenURIs[tokenId] = uri;
     }
 
@@ -107,18 +116,28 @@ UUPSUpgradeable
     /**
      * @dev See {IERC721Metadata-tokenURI}.
      */
-    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
-        require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
+    function tokenURI(
+        uint256 tokenId
+    ) public view virtual override returns (string memory) {
+        require(
+            _exists(tokenId),
+            "ERC721Metadata: URI query for nonexistent token"
+        );
         string memory base = _baseURI();
-        return bytes(base).length > 0 ? string(abi.encodePacked(base, _tokenURIs[tokenId])) : "";
+        return
+            bytes(base).length > 0
+                ? string(abi.encodePacked(base, _tokenURIs[tokenId]))
+                : "";
     }
 
     // override internals
-    function supportsInterface(bytes4 interfaceId)
-    public
-    view
-    override(ERC721Upgradeable, AccessControlEnumerableUpgradeable)
-    returns (bool)
+    function supportsInterface(
+        bytes4 interfaceId
+    )
+        public
+        view
+        override(ERC721Upgradeable, AccessControlEnumerableUpgradeable)
+        returns (bool)
     {
         return super.supportsInterface(interfaceId);
     }
@@ -167,7 +186,7 @@ UUPSUpgradeable
      * @dev This empty reserved space is put in place to allow future versions to add new
      * variables without shifting down storage in the inheritance chain.
      * See https://docs.openzeppelin.com/contracts/4.x/upgradeable#storage_gaps
-    */
+     */
     uint256[50] private __gap;
 
 }
